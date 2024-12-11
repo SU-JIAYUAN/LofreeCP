@@ -1,6 +1,6 @@
 # LofreeCP
 
-LofreeCP repository consists of two main files: `run_generation.py` and `run_cp.py`. The goal of the project is to first sample model responses using `run_generation.py`, and then perform conformal prediction with the generated responses using `run_cp.py`.
+LofreeCP repository consists of two main files: `run_generation.py` and `run_cp.py`. The goal is to first sample model responses using `run_generation.py`, and then perform conformal prediction with the generated responses using `run_cp.py`.
 
 ## Overview
 
