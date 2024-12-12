@@ -6,7 +6,7 @@ LofreeCP repository consists of two main files: `run_generation.py` and `run_cp.
 
 ### Workflow
 1. **First Step: Sampling Responses**
-    - Run `run_generation.py` to generate and sample responses.
+    - Run `run_generation.py` to generate and sample responses. I suggest you use transformers Version: 4.32.0.
   
 2. **Second Step: Conformal Prediction**
     - After collecting all the responses, run `run_cp.py` to apply our conformal prediction method.
