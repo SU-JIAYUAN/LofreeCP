@@ -8,11 +8,18 @@ For a detailed explanation of LofreeCP, please refer to the paper:
 ## **🛠️** About LofreeCP
 
 1. **First Step: Sampling Responses**
-    - Run `run_generation.py` to generate and sample responses. I suggest you use transformers Version: 4.32.0.
+   
+Run `run_generation.py` to generate and sample responses. I suggest you use transformers Version: 4.32.0.
+```shell
+python run_generation.py
+```
   
 2. **Second Step: Conformal Prediction**
-    - After collecting all the responses, run `run_cp.py` to apply our conformal prediction method.
-
+   
+After collecting all the responses, run `run_cp.py` to apply our conformal prediction method.
+```shell
+python run_cp.py
+```
 ## Citation<a name="cita"></a>
 ```latex
 @inproceedings{su-etal-2024-api,
