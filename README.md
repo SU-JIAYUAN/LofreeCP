@@ -1,17 +1,25 @@
 # LofreeCP
+LofreeCP aims to address the pervasive challenge of quantifying uncertainty in large language models (LLMs) without logit-access by formulating nonconformity measures using both coarse-grained (i.e., sample frequency) and fine-grained uncertainty notions (e.g., normalized entropy & semantic similarity). 
 
-LofreeCP repository consists of two main files: `run_generation.py` and `run_cp.py`. The goal is to first sample model responses using `run_generation.py`, and then perform conformal prediction with the generated responses using `run_cp.py`.
+## **📄** Paper
+For a detailed explanation of LofreeCP, please refer to the paper:  
+[API Is Enough: Conformal Prediction for Large Language Models Without Logit-Access](https://arxiv.org/abs/2403.01216v2)
 
-## Overview
+## **🛠️** About LofreeCP
 
-### Workflow
 1. **First Step: Sampling Responses**
     - Run `run_generation.py` to generate and sample responses. I suggest you use transformers Version: 4.32.0.
   
 2. **Second Step: Conformal Prediction**
     - After collecting all the responses, run `run_cp.py` to apply our conformal prediction method.
 
-### Key Files
-- **`run_generation.py`**: This script is used for generating and sampling responses from the model based on inputs.
-  
-- **`run_cp.py`**: This script takes the generated responses and applies conformal prediction methods to quantify uncertainty in the model's predictions.
+## Citation<a name="cita"></a>
+```latex
+@inproceedings{su-etal-2024-api,
+  title={API Is Enough: Conformal Prediction for Large Language Models Without Logit-Access},
+  author={Su, Jiayuan and Luo, Jing and Wang, Hongwei and Cheng, Lu},
+  booktitle={Findings of the Association for Computational Linguistics: EMNLP 2024},
+  pages={979--995},
+  year={2024}
+}
+```
