@@ -12,9 +12,8 @@ from gensim.models import FastText
 from gensim.models.word2vec import LineSentence
 import ast
 import random
-# from nltk.translate.bleu_score import sentence_bleu
 
-TEST_number_of_freq1 = 0
+
 best_av_size = 100
 best_params = [100, 100]
 
@@ -22,15 +21,12 @@ best_params = [100, 100]
 # define the number of shot, sampling counts, alpha
 kshot = 32
 sampling_num = 20
-quantile_bar = 0.3
+predefined_error_rate = 0.3 # pre-defined error rate
 results = []
 
 similarity_model = FastText(sentences=common_texts, vector_size=200, min_count=1)
 
 def list_of_lists_to_frequency_dicts(list_of_lists):
-    '''
-    Convert the list to sorted dics showing the frequencies of generated answers
-    '''
     frequency_dicts = []
     for sub_list in list_of_lists:
         element_frequency = defaultdict(int)
@@ -66,13 +62,9 @@ def new_CP_score(dict_of_freq, weight):
 
     return dict_of_score, normalized_entropy
 
-def calculate_quantile(n, alpha):
+def calculate_quantile_pos(n, alpha):
     result = np.ceil((n + 1) * (1 - alpha)) / n
     return result
-
-def admission_function(candidate_list, correct_answer):
-    # Not used.
-        return "Reject"
 
 
 def remove_punctuation(input_string):
@@ -117,8 +109,6 @@ for weight in weights:
         cali_answer = []
         test_answer = []
         correct_answers =[]
-        generation_calibration = []
-        generation_test = []
         generation = []
 
 
@@ -145,13 +135,14 @@ for weight in weights:
         total_val_size_sum = 0
         size_distribution_sum = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         coverage_sum = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        random_count = 50
-        current_count = 0
+        repeat_count = 50
 
-        # for example, num = 3
-        num = 3
 
-        for i in range(random_count):
+        # for example, split_num = 3, which is used to divide samples into cali, val, test. 
+        # You can also use other ways to divide samples.
+        split_num = 3
+
+        for i in range(repeat_count):
             random.shuffle(combined_data)
             correct_answers, generated_answers_freq = zip(*combined_data)
             nonconformity_scores = []
@@ -161,50 +152,41 @@ for weight in weights:
             test_correct_answers = []
             val_set = []
             val_correct_answers = []
-            bar = 0
+            num_cali = 0
 
             for index, dict_of_freq in enumerate(generated_answers_freq):
-                if index % num == 0:
+                if index % split_num == 0: # cali
                     result, NE = new_CP_score(dict_of_freq, weight)
-                    bar += 1
-                    '''
-                    Get the nonconformity score
-                    '''
+                    num_cali += 1
 
-                    # If we use similarity here --------------------------------------------------------------------
                     if correct_answers[index] not in [answer for answer in list(generated_answers_freq[index].keys())]:
-                        if admission_function(list(generated_answers_freq[index].keys()), correct_answers[index]) != "Reject":
-                            nonconformity_score = result[admission_function(list(generated_answers_freq[index].keys()), correct_answers[index])]
-                        else:
-                            nonconformity_score = 20
+                        nonconformity_score = 20
 
                     else:                
                         nonconformity_score = result[correct_answers[index]]
-                        if (generated_answers_freq[index][correct_answers[index]] == 1):
-                            TEST_number_of_freq1 += 1
-                            
-                # --------------------------------------------------------------------------------------
 
 
                     nonconformity_scores.append(nonconformity_score)
-                elif index % num == 1:
+
+                elif index % split_num == 1: # val
                     val_set.append(generated_answers_freq[index])
                     val_correct_answers.append(correct_answers[index])
-                else:
+                else: # test
                     test_set.append(generated_answers_freq[index])
                     test_correct_answers.append(correct_answers[index])
 
 
 
 
-            quantile = calculate_quantile(bar, quantile_bar) * 100
+            quantile_pos = calculate_quantile_pos(num_cali, predefined_error_rate) * 100
+
+            # print(calculate_quantile_pos(num_cali, predefined_error_rate), quantile_pos)
 
             sorted_nonconformity_scores = sorted(nonconformity_scores, reverse=True)
-            print(sorted_nonconformity_scores)
+            # print(sorted_nonconformity_scores)
 
-            quantile_value = np.percentile(sorted_nonconformity_scores, quantile)
+            quantile_value = np.percentile(sorted_nonconformity_scores, quantile_pos)
 
-            current_count += 1
             predicted_answers_val = []
             predicted_answers = []
 
@@ -240,35 +222,32 @@ for weight in weights:
                 if test_correct_answers[k] in sublist:
                     total_correct += 1
                     conditional_coverage[sublist_len] += 1
-                else:
-                    if admission_function(sublist, test_correct_answers[k]) != "Reject":
-                        total_correct += 1
+
                 total_size += len(sublist)
 
                 size_distribution[len(sublist)] += 1
 
             total_size_sum += total_size
-            # print(total_size)
             total_correct_sum += total_correct
             for i in range(len(size_distribution)):
                 size_distribution_sum[i] += size_distribution[i]
                 coverage_sum[i] += conditional_coverage[i]
 
         print("BEGIN===============================================================")
-        print("average size ", total_size_sum / random_count / total_question)
-        print("distribution: ", [x / random_count for x in size_distribution_sum])
-        print("conditional cov: ", [x / random_count for x in coverage_sum])
-        print("accuracy: ", total_correct_sum / total_question / random_count)
-        print(total_correct_sum)
-        print(total_question)
-        print(random_count)
+        print("average size ", total_size_sum / repeat_count / total_question)
+        print("distribution: ", [x / repeat_count for x in size_distribution_sum])
+        print("conditional cov: ", [x / repeat_count for x in coverage_sum])
+        print("accuracy: ", total_correct_sum / total_question / repeat_count)
+        # print(total_correct_sum)
+        # print(total_question)
+        # print(repeat_count)
         print("OVER===============================================================")
-        if total_val_size_sum / random_count / total_val_question < best_av_size:
-            best_av_size = total_val_size_sum / random_count / total_val_question
+        if total_val_size_sum / repeat_count / total_val_question < best_av_size:
+            best_av_size = total_val_size_sum / repeat_count / total_val_question
             best_params[0] =  weight
             best_params[1] =  weight_2
-        results.append([total_size_sum / random_count / total_question, total_correct_sum / total_question / random_count])
-        break
+        results.append([total_size_sum / repeat_count / total_question, total_correct_sum / total_question / repeat_count])
+
 print(best_av_size)
 print(best_params)
-# print(results)
+print(results)
