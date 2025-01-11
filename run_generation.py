@@ -41,13 +41,6 @@ def answer_pos_locate(question, text):
     newline = newline if newline != -1 else text.find('</s>', end + 2)
     return [end, newline]
 
-# Convert list of lists to frequency dictionaries
-def list_of_lists_to_frequency_dicts(list_of_lists):
-    return [
-        dict(sorted(defaultdict(int, ((e, sub_list.count(e)) for e in sub_list)).items(), key=lambda x: x[1], reverse=True))
-        for sub_list in list_of_lists
-    ]
-
 # Generate text
 def generate_text(prompt, max_new_tokens=10, num_return_sequences=1):
     inputs = tokenizer(prompt, return_tensors="pt").to(devices[0])
@@ -88,3 +81,4 @@ with open("generation.txt", "w") as file:
 
 with open("answers.txt", "w") as file2:
     file2.write(str(answers[num_shots:num_samples + num_shots]) + "\n")
+
