@@ -1,5 +1,6 @@
 # LofreeCP
-LofreeCP aims to address the pervasive challenge of quantifying uncertainty in large language models (LLMs) without logit-access by formulating nonconformity measures using both coarse-grained (i.e., sample frequency) and fine-grained uncertainty notions (e.g., normalized entropy & semantic similarity). 
+LofreeCP addresses the critical challenge of quantifying uncertainty in large language models (LLMs) without logit access. By leveraging ​nonconformity measures​ that combine coarse-grained (e.g., sample frequency) and fine-grained uncertainty signals (e.g., normalized entropy, semantic similarity), our method provides statistically rigorous uncertainty estimates for black-box LLMs.
+
 
 ## **📄** Paper
 For a detailed explanation of LofreeCP, please refer to the paper:  
@@ -7,6 +8,24 @@ For a detailed explanation of LofreeCP, please refer to the paper:
 
 ## **🛠️** About LofreeCP
 
+![image](https://github.com/user-attachments/assets/298f5751-435b-432f-bd06-c6673d5d46ac)
+
+## Why LofreeCP?
+
+## Why LofreeCP?
+
+<div align="center">
+
+| Feature               | Traditional CP         | LofreeCP               |
+|-----------------------|------------------------|------------------------|
+| ​**Logit Access**​      | ❌ Required           | ✅ Not needed          |
+| ​**API-Only LLMs**​     | ❌ Incompatible       | ✅ Supported          |
+| ​**Prediction Set Efficiency**​ | ⚠️ Suboptimal       | 🎯 Optimized          |
+
+
+</div>
+
+## Run
 **First Step: Sampling Responses**
    
 Run `run_generation.py` to generate and sample responses. I suggest you use transformers Version: 4.32.0.
