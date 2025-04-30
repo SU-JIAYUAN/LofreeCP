@@ -1,5 +1,5 @@
 # LofreeCP
-LofreeCP addresses the critical challenge of quantifying uncertainty in large language models (LLMs) without logit access. By leveraging ​nonconformity measures​ that combine coarse-grained (e.g., sample frequency) and fine-grained uncertainty signals (e.g., normalized entropy, semantic similarity), our method provides statistically rigorous uncertainty estimates for black-box LLMs.
+LofreeCP addresses the critical challenge of quantifying uncertainty in large language models (LLMs) using Conformal Prediction (CP) without logit access. By leveraging ​nonconformity measures​ that combine coarse-grained (e.g., sample frequency) and fine-grained uncertainty signals (e.g., normalized entropy, semantic similarity), our method provides statistically rigorous uncertainty estimates for black-box LLMs.
 
 
 ## **📄** Paper
