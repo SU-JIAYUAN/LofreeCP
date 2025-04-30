@@ -12,8 +12,6 @@ For a detailed explanation of LofreeCP, please refer to the paper:
 
 ## Why LofreeCP?
 
-## Why LofreeCP?
-
 <div align="center">
 
 | Feature               | Traditional CP         | LofreeCP               |
